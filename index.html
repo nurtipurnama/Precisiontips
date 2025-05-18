@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Match Analyzer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sports Match Analyzer</h1>
+            <p class="subtitle">Advanced Match Analysis & Data Visualization</p>
+        </header>
+
+        <main>
+            <!-- Team Information Section -->
+            <section class="card" id="team-setup">
+                <h2>🏆 Team Information</h2>
+                <form id="team-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="team1">Team 1 Name</label>
+                            <input type="text" id="team1" placeholder="Enter team name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="team2">Team 2 Name</label>
+                            <input type="text" id="team2" placeholder="Enter team name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="match-location">Match Location</label>
+                            <select id="match-location">
+                                <option value="neutral">Neutral Venue</option>
+                                <option value="home">Team 1 Home</option>
+                                <option value="away">Team 2 Home</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="match-importance">Match Importance</label>
+                            <select id="match-importance">
+                                <option value="0.8">Friendly Match</option>
+                                <option value="1.0">Regular Match</option>
+                                <option value="1.2">Tournament Match</option>
+                                <option value="1.5">Playoff Match</option>
+                                <option value="2.0">Championship/Final</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Match Data Section -->
+            <section class="card" id="match-data">
+                <h2>📊 Match Data Input</h2>
+                
+                <!-- Data Status Indicator -->
+                <div class="data-status-container">
+                    <div id="data-status" class="data-status insufficient">
+                        <span class="icon">⚠️</span>
+                        <span>Need more matches for analysis</span>
+                    </div>
+                    <div class="data-counters">
+                        <span class="counter">H2H: <span id="h2h-count">0 matches</span></span>
+                        <span class="counter">Team 1: <span id="team1-count">0 matches</span></span>
+                        <span class="counter">Team 2: <span id="team2-count">0 matches</span></span>
+                    </div>
+                </div>
+                
+                <!-- Head-to-Head Matches -->
+                <div class="match-input-section">
+                    <h3>Head-to-Head Matches</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label id="h2h-team1-label">Team 1 Scores (comma separated)</label>
+                            <input type="text" id="h2h-team1" placeholder="e.g., 2,1,3,0,2">
+                            <small>Enter scores from oldest to newest match</small>
+                        </div>
+                        <div class="form-group">
+                            <label id="h2h-team2-label">Team 2 Scores (comma separated)</label>
+                            <input type="text" id="h2h-team2" placeholder="e.g., 1,2,1,1,0">
+                            <small>Enter scores from oldest to newest match</small>
+                        </div>
+                    </div>
+                    <button type="button" id="h2h-add-btn" class="btn btn-primary">Add H2H Data</button>
+                    <div id="h2h-match-summary" class="match-summary"></div>
+                </div>
+                
+                <!-- Team 1 Last Matches -->
+                <div class="match-input-section">
+                    <h3>Team 1 Recent Matches</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label id="team1-scores-label">Team 1 Scores (comma separated)</label>
+                            <input type="text" id="team1-scores" placeholder="e.g., 3,2,1,2,3">
+                            <small>Scores against various opponents</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="team1-opponent">Opponent Scores (comma separated)</label>
+                            <input type="text" id="team1-opponent" placeholder="e.g., 1,0,1,0,2">
+                            <small>Opponent scores in same order</small>
+                        </div>
+                    </div>
+                    <button type="button" id="team1-add-btn" class="btn btn-primary">Add Team 1 Data</button>
+                    <div id="team1-match-summary" class="match-summary"></div>
+                </div>
+                
+                <!-- Team 2 Last Matches -->
+                <div class="match-input-section">
+                    <h3>Team 2 Recent Matches</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label id="team2-scores-label">Team 2 Scores (comma separated)</label>
+                            <input type="text" id="team2-scores" placeholder="e.g., 2,3,1,0,2">
+                            <small>Scores against various opponents</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="team2-opponent">Opponent Scores (comma separated)</label>
+                            <input type="text" id="team2-opponent" placeholder="e.g., 0,1,0,2,1">
+                            <small>Opponent scores in same order</small>
+                        </div>
+                    </div>
+                    <button type="button" id="team2-add-btn" class="btn btn-primary">Add Team 2 Data</button>
+                    <div id="team2-match-summary" class="match-summary"></div>
+                </div>
+                
+                <!-- Data Controls -->
+                <div class="data-controls">
+                    <button type="button" id="clear-data-btn" class="btn btn-secondary">Clear All Data</button>
+                    <button type="button" id="sample-data-btn" class="btn btn-secondary">Add Sample Data</button>
+                </div>
+            </section>
+
+            <!-- Betting Lines Section -->
+            <section class="card" id="betting-lines">
+                <h2>💰 Betting Lines (Optional)</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="total-line">Total Line (Over/Under)</label>
+                        <input type="number" id="total-line" placeholder="e.g., 2.5" step="0.5" min="0">
+                        <small>Total goals threshold for over/under analysis</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="team1-handicap">Team 1 Handicap</label>
+                        <input type="number" id="team1-handicap" placeholder="e.g., -0.5" step="0.5">
+                        <small>Positive for advantage, negative for disadvantage</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="team2-handicap">Team 2 Handicap</label>
+                        <input type="number" id="team2-handicap" placeholder="e.g., +0.5" step="0.5">
+                        <small>Positive for advantage, negative for disadvantage</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analyze Button -->
+            <button id="analyze-button" class="btn btn-analyze">
+                <span class="btn-text">🔍 Analyze Match</span>
+                <span class="btn-loading">Analyzing...</span>
+            </button>
+
+            <!-- Loading Section -->
+            <div id="loading" class="loading-section" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Analyzing match data...</p>
+            </div>
+
+            <!-- Results Section -->
+            <section id="results" class="results-section" style="display: none;">
+                <div class="card">
+                    <h2>📈 Analysis Results</h2>
+                    
+                    <!-- Outcome Analysis -->
+                    <div id="outcome-analysis" class="analysis-block"></div>
+                    
+                    <!-- Score Analysis -->
+                    <div id="score-analysis" class="analysis-block"></div>
+                    
+                    <!-- Key Factors -->
+                    <div id="key-factors" class="analysis-block"></div>
+                    
+                    <!-- Detailed Analysis -->
+                    <div id="detailed-analysis" class="analysis-block"></div>
+                </div>
+                
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="chart-grid">
+                        <div class="chart-card">
+                            <h3>Head-to-Head Performance</h3>
+                            <div class="chart-container">
+                                <canvas id="h2h-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3>Team 1 vs Opponents</h3>
+                            <div class="chart-container">
+                                <canvas id="team1-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3>Team 2 vs Opponents</h3>
+                            <div class="chart-container">
+                                <canvas id="team2-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3>Total Goals Analysis</h3>
+                            <div class="chart-container">
+                                <canvas id="total-score-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3>Performance Index Over Time</h3>
+                            <div class="chart-container">
+                                <canvas id="performance-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3>Outcome Probabilities</h3>
+                            <div class="chart-container">
+                                <canvas id="probability-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Sports Match Analyzer. Advanced analytics for informed decisions.</p>
+        </footer>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
